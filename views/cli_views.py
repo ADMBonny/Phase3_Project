@@ -1,6 +1,11 @@
 import click
 from controllers.user_controller import UserController
 from controllers.transaction_controller import TransactionController
+from models.database import init_db
+from sqlalchemy.exc import SQLAlchemyErrors
+
+init_db()
+
 
 # Initialize Click group for organizing CLI commands
 @click.group()
