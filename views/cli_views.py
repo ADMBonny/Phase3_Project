@@ -1,5 +1,6 @@
 
-from sqlalchemy.exc import SQLAlchemyErrors
+from sqlalchemy.exc import SQLAlchemyError
+
 import click
 from controllers.user_controller import UserController
 from controllers.transaction_controller import TransactionController
