@@ -1,1 +1,1 @@
-# Phase3_Project
+# Personal Finance Manager CLI Application
