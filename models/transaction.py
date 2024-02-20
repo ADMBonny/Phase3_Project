@@ -16,6 +16,7 @@ class Transaction(Base):
     amount = Column(Float)
     description = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
+    transaction_type = Column(String(50))  # "income" or "expense"
 
     user = relationship("User", back_populates="transactions")
     categories = relationship("Category", secondary=transaction_category_association, back_populates="transactions")
