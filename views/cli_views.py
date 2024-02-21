@@ -97,7 +97,7 @@ def report_net_savings(user_id):
     click.echo(f"Net savings for user {user_id}: {net_savings}")
 
 
-cli.add_command(view_sorted_transactions)
+
 
 @click.command('view-sorted-transactions', help="View transactions sorted by a specified field")
 @click.option('--user_id', required=True, type=int, help="User ID to view transactions for")
@@ -120,7 +120,7 @@ def view_sorted_transactions(user_id, sort_by, order):
         for transaction in transactions:
             click.echo(f"ID: {transaction.id}, Amount: {transaction.amount}, Type: {transaction.transaction_type}, Date: {transaction.date}, Description: {transaction.description}")
 
-
+cli.add_command(view_sorted_transactions)
 if __name__ == '__main__':
     cli()
 
