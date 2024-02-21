@@ -9,11 +9,15 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 
 Technologies Used
 
-Python 3.8+: The core programming language used for developing this CLI application.
-SQLAlchemy: A SQL toolkit and Object-Relational Mapping (ORM) library for Python.
-Alembic: A lightweight database migration tool for use with SQLAlchemy.
-Click: A Python package for creating beautiful command line interfaces in a composable way.
-SQLite: A C-language library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine.
+Python 3.8+: 
+
+SQLAlchemy: 
+
+Alembic: 
+
+Click: 
+
+SQLite: 
 
 
 How to Use the CLI
