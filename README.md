@@ -1,7 +1,9 @@
 # Personal Finance Manager CLI Application
 Personal Finance Manager CLI
+
 Author
-[Bonventure Maeta]
+Bonventure Maeta
+
 License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
 
