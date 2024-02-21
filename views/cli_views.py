@@ -4,6 +4,10 @@ from sqlalchemy.exc import SQLAlchemyError
 import click
 from controllers.user_controller import UserController
 from controllers.transaction_controller import TransactionController
+from sqlalchemy import desc, asc
+from datetime import datetime
+from models.database import SessionLocal
+from models.transaction import Transaction
 from models.database import init_db
 
 # Initialize the database
@@ -31,16 +35,21 @@ def login(username, password):
     else:
         click.echo("Login failed. Please check your username and password.")
 
-@cli.command(help="Add a new transaction")
+
+@click.command(help="Add a new transaction")
 @click.option('--user_id', type=int, prompt=True, help="Your user ID")
 @click.option('--amount', type=float, prompt=True, help="Transaction amount")
 @click.option('--description', prompt=True, default='', help="Description of the transaction")
 @click.option('--transaction_type', prompt=True, type=click.Choice(['income', 'expense'], case_sensitive=False), help="Type of the transaction")
 @click.option('--category_names', prompt=True, help="Comma-separated category names")
-def add_transaction(user_id, amount, description, transaction_type, category_names):
+@click.option('--date', prompt=True, help="Transaction date in YYYY-MM-DD format", default=str(datetime.now().date()))
+def add_transaction(user_id, amount, description, transaction_type, category_names, date):
+    
+    transaction_date = datetime.strptime(date, "%Y-%m-%d").date()
     category_list = category_names.split(',')
-    response = TransactionController.add_transaction(user_id, amount, description, transaction_type, category_list)
+    response = TransactionController.add_transaction(user_id, amount, description, transaction_type, category_list, transaction_date)
     click.echo(response.get("message") or response.get("error"))
+
 
 @cli.command(help="Edit an existing transaction")
 @click.option('--transaction_id', type=int, prompt=True, help="ID of the transaction to edit")
@@ -86,6 +95,31 @@ def report_income(user_id):
 def report_net_savings(user_id):
     net_savings = TransactionController.report_net_savings(user_id)
     click.echo(f"Net savings for user {user_id}: {net_savings}")
+
+
+cli.add_command(view_sorted_transactions)
+
+@click.command('view-sorted-transactions', help="View transactions sorted by a specified field")
+@click.option('--user_id', required=True, type=int, help="User ID to view transactions for")
+@click.option('--sort_by', type=click.Choice(['date', 'amount', 'type'], case_sensitive=False), default='date', help="Sort transactions by this field")
+@click.option('--order', type=click.Choice(['asc', 'desc'], case_sensitive=False), default='asc', help="Order of sorting (ascending or descending)")
+def view_sorted_transactions(user_id, sort_by, order):
+    """View transactions sorted by date, amount, or type."""
+    with SessionLocal() as db:
+        query = db.query(Transaction).filter(Transaction.user_id == user_id)
+        
+        if sort_by == 'date':
+            query = query.order_by(asc(Transaction.date) if order == 'asc' else desc(Transaction.date))
+        elif sort_by == 'amount':
+            query = query.order_by(asc(Transaction.amount) if order == 'asc' else desc(Transaction.amount))
+        elif sort_by == 'type':
+            query = query.order_by(asc(Transaction.transaction_type) if order == 'asc' else desc(Transaction.transaction_type))
+        
+        transactions = query.all()
+        
+        for transaction in transactions:
+            click.echo(f"ID: {transaction.id}, Amount: {transaction.amount}, Type: {transaction.transaction_type}, Date: {transaction.date}, Description: {transaction.description}")
+
 
 if __name__ == '__main__':
     cli()

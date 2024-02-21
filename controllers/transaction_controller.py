@@ -32,6 +32,7 @@ class TransactionController:
                     description=description,
                     transaction_type=transaction_type,
                     categories=categories
+                    date=date
                 )
                 db.add(transaction)
                 db.commit()
