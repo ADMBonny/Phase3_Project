@@ -3,6 +3,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from models.database import SessionLocal
 from models.transaction import Transaction
 from models.category import Category
+from sqlalchemy import func
+
 
 class TransactionController:
 
@@ -85,21 +87,30 @@ class TransactionController:
             return transactions if transactions else {"error": "No transactions found."}
 
     @staticmethod
-    def report_expenses(user_id: int):
+    def report_expenses(user_id: int) -> float:
+        """Calculate and return the total expenses for a given user."""
         with SessionLocal() as db:
-            total_expenses = db.query(func.sum(Transaction.amount)).filter(Transaction.user_id == user_id, Transaction.transaction_type == 'expense').scalar() or 0
+            total_expenses = db.query(func.sum(Transaction.amount))\
+                                .filter(Transaction.user_id == user_id, 
+                                        Transaction.transaction_type == 'expense')\
+                                .scalar() or 0
             return total_expenses
+    @staticmethod
+    
+    def report_income(user_id: int) -> float:
+        """Calculate and return the total income for a given user."""
+        with SessionLocal() as db:
+             total_income = db.query(func.sum(Transaction.amount))\
+                               .filter(Transaction.user_id == user_id, 
+                                       Transaction.transaction_type == 'income')\
+                               .scalar() or 0
+             return total_income
+
 
     @staticmethod
-    def report_income(user_id: int):
-        with SessionLocal() as db:
-            total_income = db.query(func.sum(Transaction.amount)).filter(Transaction.user_id == user_id, Transaction.transaction_type == 'income').scalar() or 0
-            return total_income
-
-    @staticmethod
-    def report_net_savings(user_id: int):
-        with SessionLocal() as db:
-            income = TransactionController.report_income(user_id)
-            expenses = TransactionController.report_expenses(user_id)
-            net_savings = income - expenses
-            return net_savings
+    def report_net_savings(user_id: int) -> float:
+        """Calculate and return the net savings for a given user."""
+        total_income = TransactionController.report_income(user_id)
+        total_expenses = TransactionController.report_expenses(user_id)
+        net_savings = total_income - total_expenses
+        return net_savings

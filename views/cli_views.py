@@ -25,8 +25,11 @@ def register(username, password):
 @click.option('--username', prompt=True, help="Your username")
 @click.option('--password', prompt=True, hide_input=True, help="Your password")
 def login(username, password):
-    response = UserController.login_user(username, password)
-    click.echo(response.get("message") or response.get("error"))
+    """Handle user login"""
+    if UserController.login_user(username, password):
+        click.echo("Login successful.")
+    else:
+        click.echo("Login failed. Please check your username and password.")
 
 @cli.command(help="Add a new transaction")
 @click.option('--user_id', type=int, prompt=True, help="Your user ID")
@@ -76,13 +79,13 @@ def report_expenses(user_id):
 @click.option('--user_id', type=int, prompt=True, help="User ID to calculate income for")
 def report_income(user_id):
     income = TransactionController.report_income(user_id)
-    click.echo(f"Total Income: {income}")
+    click.echo(f"Total income for user {user_id}: {income}")
 
 @cli.command(help="Report net savings for a user")
 @click.option('--user_id', type=int, prompt=True, help="User ID to calculate net savings for")
 def report_net_savings(user_id):
     net_savings = TransactionController.report_net_savings(user_id)
-    click.echo(f"Net Savings: {net_savings}")
+    click.echo(f"Net savings for user {user_id}: {net_savings}")
 
 if __name__ == '__main__':
     cli()
