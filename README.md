@@ -47,7 +47,7 @@ pipenv run python -m views.cli_views login --username <username> --password <pas
 Add a New Transaction
 
 
-pipenv run python -m views.cli_views add-transaction --user_id <user_id> --amount <amount> --description "<description>" --transaction_type <income/expense> --category_names "<category1,category2>" --date <YYYY-MM-DD>
+pipenv run python -m views.cli_views add-transaction --user_id <user_id> --amount <amount> --description "<description>" --transaction_type <income/expense> --category_names "<category1(income),category2(expense)>" --date <YYYY-MM-DD>
 
 Edit an Existing Transaction
 
