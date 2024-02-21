@@ -8,6 +8,7 @@ sqlalchemy = "*"
 alembic = "*"
 click = "*"
 pytest = "*"
+passlib = "*"
 
 [dev-packages]
 pylint = "*"

@@ -17,7 +17,7 @@ class Transaction(Base):
     description = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
     transaction_type = Column(Enum('income', 'expense', name='transaction_types'), nullable=False)
-    date = Column(Date, nullable=False)  
+    transaction_date = Column(Date, nullable=False)  
 
     user = relationship("User", back_populates="transactions")
     categories = relationship("Category", secondary=transaction_category_association, back_populates="transactions")

@@ -49,6 +49,8 @@ def add_transaction(user_id, amount, description, transaction_type, category_nam
     category_list = category_names.split(',')
     response = TransactionController.add_transaction(user_id, amount, description, transaction_type, category_list, transaction_date)
     click.echo(response.get("message") or response.get("error"))
+    
+cli.add_command(add_transaction)  
 
 
 @cli.command(help="Edit an existing transaction")

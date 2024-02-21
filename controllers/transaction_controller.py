@@ -1,15 +1,27 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from models.database import SessionLocal
+from datetime import datetime, date
 from models.transaction import Transaction
 from models.category import Category
 from sqlalchemy import func
 
-
 class TransactionController:
 
     @staticmethod
-    def add_transaction(user_id: int, amount: float, description: str, transaction_type: str, category_names: list) -> dict:
+    def add_transaction(user_id: int, amount: float, description: str, transaction_type: str, category_names: list, transaction_date) -> dict:
+        # Check if transaction_date is already a date object
+        if isinstance(transaction_date, date):
+            parsed_date = transaction_date
+        else:
+            try:
+                parsed_date = datetime.strptime(transaction_date, "%Y-%m-%d").date()
+            except TypeError:
+                return {"error": "Invalid date format. Please use YYYY-MM-DD format."}
+            except ValueError:
+                return {"error": "Invalid date format. Please use YYYY-MM-DD format."}
+    
+
         with SessionLocal() as db:
             try:
                 # Ensure amount is positive
@@ -32,14 +44,16 @@ class TransactionController:
                     description=description,
                     transaction_type=transaction_type,
                     categories=categories,
-                    date=date,
+                    transaction_date=parsed_date,
                 )
+                    
                 db.add(transaction)
                 db.commit()
                 return {"message": "Transaction added successfully."}
             except SQLAlchemyError as e:
                 db.rollback()
                 return {"error": f"Failed to add transaction: {e}"}
+
 
     @staticmethod
     def edit_transaction(transaction_id: int, amount: float = None, description: str = None, category_names: list = None) -> dict:
